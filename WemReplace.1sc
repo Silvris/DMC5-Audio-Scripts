@@ -1,0 +1,106 @@
+//------------------------------------------------
+//--- 010 Editor v9.0.2 Script File
+//
+//      File: 
+//   Authors: Silvris
+//   Version: 
+//   Purpose: 
+//  Category: 
+//   History: 
+//------------------------------------------------
+uint a;
+double b;
+double c;
+double d;
+double e;
+int r = 0;
+int i;
+int j;
+int k;
+int l;
+/*
+void WemReplace (uint a, double b, double c, double d, double e){
+    for (i = 1; i<2;i++){
+        if (Block[i].Header.dwTag == "HIRC"){
+            for (j = 0;j<Block[i].HIRC.NumReleasableHircItem;j++){
+                if (Block[i].HIRC.Object[j].HircHeader.eHircType == 11){
+                    if (Block[i].HIRC.Object[j].Object.objectID == a){
+                        if (Block[i].HIRC.Object[j].Object.numPlaylistItem == 1){
+                            Block[i].HIRC.Object[j].Object.Playlist.fPlayAt = b;
+                            Block[i].HIRC.Object[j].Object.Playlist.fBeginTrimOffset = c;
+                            Block[i].HIRC.Object[j].Object.Playlist.fEndTrimOffset = d;
+                            Block[i].HIRC.Object[j].Object.Playlist.fSrcDuration = e;
+                        };
+                    };
+                };
+            };
+        };
+    };
+};
+This doesn't work anymore, and I don't care to fix it, use the one below
+*/
+
+void MusicTrackMultiVar (uint id, uint count, double values[]){
+    for (i = 0; i<chunkCount;i++){
+        if (Block[i].Header.dwTag == "HIRC"){
+            for (j = 0;j<Block[i].HIRC.NumReleasableHircItem;j++){
+                if (Block[i].HIRC.Object[j].Header.eHircType == 11){
+                    if (Block[i].HIRC.Object[j].Header.ulID == id){
+                        if (Block[i].HIRC.Object[j].Object.numPlaylistItem == count){
+                            for(k=0;k<count;k++){
+                                Block[i].HIRC.Object[j].Object.Playlist[k].fPlayAt = values[0+(k*4)];
+                                Block[i].HIRC.Object[j].Object.Playlist[k].fBeginTrimOffset = values[1+(k*4)];
+                                Block[i].HIRC.Object[j].Object.Playlist[k].fEndTrimOffset = values[2+(k*4)];
+                                Block[i].HIRC.Object[j].Object.Playlist[k].fSrcDuration = values[3+(k*4)];
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+};
+
+void MusicTrackClipReplace (uint id, uint count, double values[]){
+    for (i = 0; i<chunkCount;i++){
+        if (Block[i].Header.dwTag == "HIRC"){
+            for (j = 0;j<Block[i].HIRC.NumReleasableHircItem;j++){
+                if (Block[i].HIRC.Object[j].Header.eHircType == 11){
+                    if (Block[i].HIRC.Object[j].Header.ulID == id){
+                        if (Block[i].HIRC.Object[j].Object.ClipAutomation[0].uNumPoints == count){
+                            for(k=0;k<count;k++){
+                                Block[i].HIRC.Object[j].Object.ClipAutomation[0].RTPCGraphPoint[k].To = values[k];
+                            };
+                        };
+                    };
+                };
+            };
+        };
+    };
+};
+
+void MusicSegmentSpecificVar (uint id, double loop1, double loop2){
+    for (i = 0; i<chunkCount;i++){
+        if (Block[i].Header.dwTag == "HIRC"){
+            for (j = 0;j<Block[i].HIRC.NumReleasableHircItem;j++){
+                if (Block[i].HIRC.Object[j].Header.eHircType == 10){
+                    if (Block[i].HIRC.Object[j].Header.ulID == id){
+                        Block[i].HIRC.Object[j].Object.fDuration = loop1;
+                        Block[i].HIRC.Object[j].Object.WWiseMarker[Block[i].HIRC.Object[j].Object.ulNumMarkers-1].fPosition = loop2;//this is hoping its the right one, but normally it is
+                    };
+                };
+            };
+        };
+    };
+};
+//examples for all functions
+//bgm_bp_menu.bnk.2.x64
+//double array[8] = { 0,0,0,246633.333};
+//MusicTrackMultiVar (252960926, 1, array);
+//MusicSegmentSpecificVar (118430581, 246633.333, 246633.333);
+//MusicSegmentSpecificVar (571830855, 246633.333, 246633.333);
+//MusicSegmentSpecificVar (493212367, 246633.333, 246633.333);
+//MusicSegmentSpecificVar (384743019, 246633.333, 246633.333);
+//MusicSegmentSpecificVar (384743019, 246633.333, 246633.333);
+//double clipArray[3] = {0, 246.633333, 246.633333};
+//MusicTrackClipReplace(252960926, 3, clipArray);

@@ -1,0 +1,19 @@
+//------------------------------------------------
+//--- 010 Editor v11.0.1 Script File
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+//   History: 
+//------------------------------------------------
+void SetLanguageUnkn(uint val){
+    RunTemplate("PCK Header.bt");
+    local int i;
+    for(i=0;i<wemCount;i++){
+        wems[i].unkn2 = val;
+    };
+};
+
+SetLanguageUnkn(1);
